@@ -8,6 +8,7 @@ use anyhow::{bail, Context, Result};
 use base64::Engine;
 use occlum_dcap::{sgx_report_data_t, DcapQuote};
 use serde::{Deserialize, Serialize};
+use kbs_types::Tee;
 
 const OCCLUM_ENV: &str = "OCCLUM";
 
@@ -83,6 +84,12 @@ impl Attester for SgxDcapAttester {
 
         serde_json::to_string(&evidence).context("Serialize SGX DCAP Attester evidence failed")
     }
+
+    async fn get_type(&self) -> Tee {
+        Tee::Sgx
+    }
+
+
 }
 
 #[cfg(test)]

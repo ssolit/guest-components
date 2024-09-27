@@ -7,6 +7,7 @@ use super::tsm_report::*;
 use super::Attester;
 use anyhow::*;
 use serde::{Deserialize, Serialize};
+use kbs_types::Tee;
 
 const CCA_CHALLENGE_SIZE: usize = 64;
 
@@ -40,6 +41,10 @@ impl Attester for CcaAttester {
         let ev =
             serde_json::to_string(&evidence).context("Serialization of CCA evidence failed")?;
         Ok(ev)
+    }
+
+    async fn get_type(&self) -> Tee {
+        Tee::Cca
     }
 }
 

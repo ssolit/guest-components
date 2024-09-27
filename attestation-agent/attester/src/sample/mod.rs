@@ -7,6 +7,7 @@ use super::Attester;
 use anyhow::*;
 use base64::Engine;
 use serde::{Deserialize, Serialize};
+use kbs_types::Tee;
 
 // Sample attester is always supported
 pub fn detect_platform() -> bool {
@@ -32,5 +33,9 @@ impl Attester for SampleAttester {
         };
 
         serde_json::to_string(&evidence).context("Serialize sample evidence failed")
+    }
+
+    async fn get_type(&self) -> Tee {
+        Tee::Sample
     }
 }

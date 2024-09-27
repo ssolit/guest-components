@@ -16,6 +16,7 @@ use std::path::Path;
 use hyper::body::HttpBody as _;
 use hyper::Client;
 use hyper_tls::HttpsConnector;
+use kbs_types::Tee;
 
 pub fn detect_platform() -> bool {
     Path::new("/dev/csv-guest").exists()
@@ -64,6 +65,10 @@ impl Attester for CsvAttester {
             serial_number: report_signer.sn.to_vec(),
         };
         serde_json::to_string(&evidence).context("Serialize CSV evidence failed")
+    }
+
+    async fn get_type(&self) -> Tee {
+        Tee::Csv
     }
 }
 

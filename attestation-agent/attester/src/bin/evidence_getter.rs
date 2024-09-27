@@ -7,6 +7,7 @@ use attester::*;
 use clap::Parser;
 use std::io::Read;
 use tokio::fs;
+use std::any::type_name;
 
 #[derive(Debug, Parser)]
 #[command(author)]
@@ -25,13 +26,17 @@ enum Cli {
 
 #[tokio::main]
 async fn main() {
+    println!();
     // report_data on all platforms is 64 bytes length.
     let mut report_data = vec![0u8; 64];
 
     let cli = Cli::parse();
 
     let tee = detect_tee_type();
+    println!("TEE type: {:?}", tee);
+
     let attester: BoxedAttester = tee.try_into().expect("create attester failed");
+    println!("Attester type: {:?}", attester.get_type().await);
 
     match cli {
         Cli::Stdio => std::io::stdin()
@@ -55,4 +60,8 @@ async fn main() {
         .await
         .expect("get evidence failed");
     println!("{evidence}");
+}
+
+fn print_type_of<T>(_: &T) {
+    println!("Type: {}", type_name::<T>());
 }

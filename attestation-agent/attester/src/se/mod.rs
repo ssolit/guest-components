@@ -15,6 +15,7 @@ use serde::{Deserialize, Serialize};
 use serde_json;
 use serde_with::{base64::Base64, serde_as};
 use std::fs;
+use kbs_types::Tee;
 
 const DIGEST_FILE: &str = "/run/peerpod/initdata.digest";
 
@@ -102,5 +103,9 @@ impl Attester for SeAttester {
 
         debug!("response json: {response:#?}");
         Ok(serde_json::to_string(&response)?)
+    }
+
+    async fn get_type(&self) -> Tee {
+        Tee::Se
     }
 }

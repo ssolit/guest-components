@@ -9,7 +9,10 @@ edition = "2021"
 anyhow.workspace = true
 async-trait.workspace = true
 az-snp-vtpm = { version = "0.7.0", default-features = false, features = ["attester"], optional = true }
+
 az-tdx-vtpm = { version = "0.7.0", default-features = false, features = ["attester"], optional = true }
+# az-tdx-vtpm = "0.7.0"
+
 base64.workspace = true
 clap = { workspace = true, features = ["derive"], optional = true }
 hex.workspace = true

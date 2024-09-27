@@ -92,47 +92,57 @@ pub trait Attester {
     async fn check_init_data(&self, _init_data: &[u8]) -> Result<InitdataResult> {
         Ok(InitdataResult::Unsupported)
     }
+
+    async fn get_type(&self) -> Tee;
 }
 
 // Detect which TEE platform the KBC running environment is.
 pub fn detect_tee_type() -> Tee {
     #[cfg(feature = "tdx-attester")]
     if tdx::detect_platform() {
+        println!("using tdx-attester");
         return Tee::Tdx;
     }
 
     #[cfg(feature = "sgx-attester")]
     if sgx_dcap::detect_platform() {
+        println!("using sgx-attester");
         return Tee::Sgx;
     }
 
     #[cfg(feature = "az-tdx-vtpm-attester")]
     if az_tdx_vtpm::detect_platform() {
+        println!("using az-tdx-vtpm-attester");
         return Tee::AzTdxVtpm;
     }
 
     #[cfg(feature = "az-snp-vtpm-attester")]
     if az_snp_vtpm::detect_platform() {
+        println!("using az-snp-vtpm-attester");
         return Tee::AzSnpVtpm;
     }
 
     #[cfg(feature = "snp-attester")]
     if snp::detect_platform() {
+        println!("using snp-attester");
         return Tee::Snp;
     }
 
     #[cfg(feature = "csv-attester")]
     if csv::detect_platform() {
+            println!("using csv-attester");
         return Tee::Csv;
     }
 
     #[cfg(feature = "cca-attester")]
     if cca::detect_platform() {
+        println!("using cca-attester");
         return Tee::Cca;
     }
 
     #[cfg(feature = "se-attester")]
     if se::detect_platform() {
+        println!("using se-attester");
         return Tee::Se;
     }
 

@@ -13,6 +13,7 @@ use sev::firmware::guest::AttestationReport;
 use sev::firmware::guest::Firmware;
 use sev::firmware::host::CertTableEntry;
 use std::path::Path;
+use kbs_types::Tee;
 
 mod hostdata;
 
@@ -61,5 +62,9 @@ impl Attester for SnpAttester {
         }
 
         Ok(InitdataResult::Ok)
+    }
+
+    async fn get_type(&self) -> Tee {
+        Tee::Snp
     }
 }

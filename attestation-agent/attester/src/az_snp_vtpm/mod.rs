@@ -8,6 +8,7 @@ use anyhow::{bail, Context, Result};
 use az_snp_vtpm::{imds, is_snp_cvm, vtpm};
 use log::{debug, info};
 use serde::{Deserialize, Serialize};
+use kbs_types::Tee;
 
 pub fn detect_platform() -> bool {
     match is_snp_cvm() {
@@ -32,6 +33,7 @@ struct Evidence {
 #[async_trait::async_trait]
 impl Attester for AzSnpVtpmAttester {
     async fn get_evidence(&self, report_data: Vec<u8>) -> anyhow::Result<String> {
+	println!("using AzSnpVtpmAttester");
         let report = vtpm::get_report()?;
         let quote = vtpm::get_quote(&report_data)?;
         let certs = imds::get_certs()?;
@@ -63,5 +65,9 @@ impl Attester for AzSnpVtpmAttester {
         vtpm::extend_pcr(pcr, &sha256_digest)?;
 
         Ok(())
+    }
+
+    async fn get_type(&self) -> Tee {
+        Tee::AzSnpVtpm
     }
 }

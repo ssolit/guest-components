@@ -6,7 +6,8 @@
 use super::Attester;
 use anyhow::*;
 use az_tdx_vtpm::vtpm::Quote as TpmQuote;
-use az_tdx_vtpm::{hcl, imds, is_tdx_cvm, vtpm};
+use az_tdx_vtpm::{hcl, imds, is_tdx_cvm, report, vtpm};
+use kbs_types::Tee;
 use log::{debug, info};
 use serde::{Deserialize, Serialize};
 use std::result::Result::Ok;
@@ -34,13 +35,23 @@ struct Evidence {
 #[async_trait::async_trait]
 impl Attester for AzTdxVtpmAttester {
     async fn get_evidence(&self, report_data: Vec<u8>) -> Result<String> {
-        let hcl_report_bytes = vtpm::get_report_with_report_data(&report_data)?;
+        let str = "report_data".to_string();
+        let report_data = str.as_bytes();
+
+        println!("\n using AzTdxVtpmAttester");
+        println!("here0\n");
+        println!("report_data: {:?}", report_data);
+        // let hcl_report_bytes = vtpm::get_report_with_report_data(&report_data)?;
+        let hcl_report_bytes = vtpm::get_report_with_report_data(&"report_data".to_string().as_bytes())?; // this makes the function not break 
+        println!("here1");
         let hcl_report = hcl::HclReport::new(hcl_report_bytes.clone())?;
+        println!("here2");
         let td_report = hcl_report.try_into()?;
+        println!("here3");
         let td_quote_bytes = imds::get_td_quote(&td_report)?;
-
+        println!("here4");
         let tpm_quote = vtpm::get_quote(&report_data)?;
-
+        println!("here5");
         let evidence = Evidence {
             tpm_quote,
             hcl_report: hcl_report_bytes,
@@ -66,5 +77,9 @@ impl Attester for AzTdxVtpmAttester {
         vtpm::extend_pcr(pcr, &sha256_digest)?;
 
         Ok(())
+    }
+
+    async fn get_type(&self) -> Tee {
+        Tee::AzTdxVtpm
     }
 }
