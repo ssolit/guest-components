@@ -35,14 +35,18 @@ struct Evidence {
 #[async_trait::async_trait]
 impl Attester for AzTdxVtpmAttester {
     async fn get_evidence(&self, report_data: Vec<u8>) -> Result<String> {
-        let str = "report_data".to_string();
+        // let str = "report_data".to_string(); // works
+        // let str = "report_data0".to_string(); // doesn't work
+        // let str = "report_dat".to_string(); // works
+        let str = "report_dataa".to_string(); // doesn't work
         let report_data = str.as_bytes();
 
         println!("\n using AzTdxVtpmAttester");
         println!("here0\n");
         println!("report_data: {:?}", report_data);
-        // let hcl_report_bytes = vtpm::get_report_with_report_data(&report_data)?;
-        let hcl_report_bytes = vtpm::get_report_with_report_data(&"report_data".to_string().as_bytes())?; // this makes the function not break 
+        println!("report_data_len: {:?}", report_data.len());
+        let hcl_report_bytes = vtpm::get_report_with_report_data(&report_data)?;
+        // let hcl_report_bytes = vtpm::get_report_with_report_data(&"report_data".to_string().as_bytes())?; // this makes the function not break 
         println!("here1");
         let hcl_report = hcl::HclReport::new(hcl_report_bytes.clone())?;
         println!("here2");
